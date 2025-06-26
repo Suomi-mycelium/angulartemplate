@@ -1,0 +1,139 @@
+<div class="flex min-h-screen flex-row-reverse bg-gray-100">
+  <!-- Form Panel -->
+  <div class="flex flex-1 items-center justify-center bg-white p-8">
+    <div class="w-full max-w-md">
+      <div
+        class="mb-12 inline-block rounded bg-gray-800 px-3 py-2 text-xl font-bold text-white"
+      >
+        AngularVibeCoding
+      </div>
+      <h1 class="mb-10 text-3xl font-semibold text-gray-800">Create account</h1>
+
+      <form class="flex flex-col gap-6" (ngSubmit)="onRegister()">
+        <div class="flex flex-col">
+          <label for="email" class="mb-2 text-sm font-medium text-gray-500"
+            >Email</label
+          >
+          <input
+            id="email"
+            type="email"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            autocomplete="email"
+            name="email"
+            class="form-input"
+            [class.border-red-500]="emailError()"
+          />
+          @if (emailError()) {
+          <div class="mt-1 text-xs text-red-500">{{ emailError() }}</div>
+          }
+        </div>
+
+        <div class="flex flex-col">
+          <label for="password" class="mb-2 text-sm font-medium text-gray-500"
+            >Password</label
+          >
+          <div class="input-wrapper">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event)"
+              name="password"
+              class="form-input"
+              [class.error]="passwordError()"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              aria-label="Toggle password visibility"
+            >
+              <mat-icon
+                >{{ showPassword() ? 'visibility_off' : 'visibility'
+                }}</mat-icon
+              >
+            </button>
+          </div>
+
+          @if (passwordError()) {
+          <div class="mt-1 text-xs text-red-500">{{ passwordError() }}</div>
+          }
+        </div>
+
+        <div class="flex flex-col">
+          <label
+            for="confirmPassword"
+            class="mb-2 text-sm font-medium text-gray-500"
+            >Confirm Password</label
+          >
+          <div class="input-wrapper">
+            <input
+              id="confirmPassword"
+              [type]="showPassword() ? 'text' : 'password'"
+              [ngModel]="confirmPassword()"
+              (ngModelChange)="confirmPassword.set($event)"
+              name="confirmPassword"
+              class="form-input"
+              [class.error]="confirmPasswordError()"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              aria-label="Toggle password visibility"
+            >
+              <mat-icon
+                >{{ showPassword() ? 'visibility_off' : 'visibility'
+                }}</mat-icon
+              >
+            </button>
+          </div>
+
+          @if (confirmPasswordError()) {
+          <div class="mt-1 text-xs text-red-500">
+            {{ confirmPasswordError() }}
+          </div>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-neutral mt-4 w-full"
+          [disabled]="!isFormValid()"
+        >
+          Sign Up
+        </button>
+      </form>
+
+      <div class="mt-8 text-center text-sm text-gray-500">
+        <p>
+          Already have an account?
+          <a
+            routerLink="/login"
+            class="font-semibold text-gray-800 hover:underline"
+            >Log in here</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative Panel -->
+  <div
+    class="relative hidden flex-1 items-center justify-center overflow-hidden bg-gray-900 lg:flex"
+  >
+    <div class="decorative-panel">
+      <div class="relative z-10 text-center text-white">
+        <img
+          ngSrc="images/angular-logo.png"
+          alt="Angular Logo"
+          class=""
+          width="300"
+          height="300"
+          priority
+        />
+      </div>
+    </div>
+  </div>
+</div>
