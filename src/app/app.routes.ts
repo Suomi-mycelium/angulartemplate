@@ -7,6 +7,7 @@ import { Layout } from './core/layout/layout';
 import { ForgotPassword } from './auth/forgot-password/forgot-password';
 import { Home } from './home/home';
 import { Data } from './data/data';
+import { Game } from './learn/game/game';
 
 // Define the application's routes
 export const routes: Routes = [
@@ -55,6 +56,11 @@ export const routes: Routes = [
         path: 'settings',
         component: Home, // Placeholder - replace with actual component
         title: 'Settings',
+      },
+      {
+        path: 'learn',
+        component: Game, // Placeholder - replace with actual component
+        title: 'Game',
       },
     ],
   },

@@ -34,6 +34,7 @@ export class Sidenav {
     { label: 'My Data', link: '/data', icon: '📊', visited: false },
     { label: 'Profile', link: '/profile', icon: '👤', visited: false },
     { label: 'Settings', link: '/settings', icon: '⚙️', visited: false },
+    { label: 'Learn', link: '/learn', icon: '📝', visited: false },
   ]);
 
   isCollapsed = signal(false);

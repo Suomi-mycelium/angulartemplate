@@ -1,0 +1,19 @@
+<div class="learn-container">
+    <div class="game-section">
+        <h1>{{ questions[activeQuestionId].text }}</h1>
+        <p class="subtitle">Learn garifuna by answering these questions</p>
+    </div>
+
+    <div class="grid grid-flow-row grid-cols-4 gap-4">
+        <div class="row-span-2 col-span-2">
+            <img class="w-120 items-center" [src]="questions[activeQuestionId].image" alt="Placeholder image">
+        </div>
+        @for (option of questions[activeQuestionId].options; track option) {
+        <div class="col">
+            <button class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold h-full w-full">
+                {{ option }}
+            </button>
+        </div>    
+        }
+    </div>
+</div>
