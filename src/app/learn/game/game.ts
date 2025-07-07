@@ -1,48 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Question, Questions } from '../services/questions';
+import { firstValueFrom, Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-game',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './game.html',
   styleUrl: './game.scss'
 })
-export class Game {
+export class Game implements OnInit {
+  private questionService = inject(Questions);
   activeQuestionId = 0;
-  questions = [
-    {
-      id: 1,
-      text: 'What is the capital of France?',
-      image: 'images/placeholder.png',
-      options: ['Madrid', 'Berlin', 'Paris', 'Rome'],
-      answer: 'Paris'
-    },
-    {
-      id: 2,
-      text: 'The Earth is flat.',
-      image: 'images/placeholder.png',
-      options: ['True', 'False'],
-      answer: 'False'
-    },
-    {
-      id: 3,
-      text: 'Which language is primarily used for web development?',
-      image: 'images/placeholder.png',
-      options: ['Python', 'HTML', 'C#', 'Java'],
-      answer: 'HTML'
-    },
-    {
-      id: 4,
-      text: 'Water boils at 100°C at sea level.',
-      image: 'images/placeholder.png',
-      options: ['True', 'False'],
-      answer: 'True'
-    },
-    {
-      id: 5,
-      text: 'Which of the following is a JavaScript framework?',
-      image: 'images/placeholder.png',
-      options: ['React', 'Django', 'Laravel', 'Flask'],
-      answer: 'React'
+  questions$!: Observable<Question[]>;
+
+  ngOnInit() {
+    this.questions$ = this.questionService.getQuestions();
+  }
+
+  checkAnswer(question: Question, selectedOption: string) {
+    if (selectedOption === question.answer) {
+      alert("Correct!");
+    } else {
+      alert("Incorrect!");
     }
-  ]
+  }
 }

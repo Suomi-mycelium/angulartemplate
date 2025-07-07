@@ -1,4 +1,5 @@
 <div class="learn-container">
+    @if(questions$ | async; as questions){
     <div class="game-section">
         <h1>{{ questions[activeQuestionId].text }}</h1>
         <p class="subtitle">Learn garifuna by answering these questions</p>
@@ -10,10 +11,14 @@
         </div>
         @for (option of questions[activeQuestionId].options; track option) {
         <div class="col">
-            <button class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold h-full w-full">
-                {{ option }}
+            <button (click)="checkAnswer(questions[activeQuestionId],option)"
+                class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold h-full w-full">
+                {{ option | titlecase }}
             </button>
-        </div>    
+        </div>
         }
     </div>
+    }@else{
+    <h1>No data yet...</h1>
+    }
 </div>
