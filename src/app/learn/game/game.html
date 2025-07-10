@@ -9,10 +9,10 @@
         <div class="row-span-2 col-span-2">
             <img class="w-120 items-center" [src]="questions[activeQuestionId].image" alt="Placeholder image">
         </div>
-        @for (option of questions[activeQuestionId].options; track option) {
+        @for (option of questions[activeQuestionId].options; track $index) {
         <div class="col">
-            <button (click)="checkAnswer(questions[activeQuestionId],option)"
-                class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold h-full w-full">
+            <button (click)="checkAnswer(questions[activeQuestionId],option,questions.length === activeQuestionId+1)"
+                class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold h-full w-full text-wrap">
                 {{ option | titlecase }}
             </button>
         </div>
