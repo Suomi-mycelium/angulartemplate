@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Question, Questions } from '../services/questions';
-import { firstValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,11 +17,14 @@ export class Game implements OnInit {
 
   ngOnInit() {
     this.questions$ = this.questionService.getQuestions();
+    this.questions$.subscribe((q) => console.log(q));
   }
 
   checkAnswer(question: Question, selectedOption: string, lastQuestion: boolean) {
+    const updatedQuestion = { ...question, response: selectedOption };
     if (selectedOption === question.answer) {
       alert("Correct!");
+      updatedQuestion.completed = true;
       if (lastQuestion) {
         alert("Finished!");
       } else {
@@ -30,5 +33,14 @@ export class Game implements OnInit {
     } else {
       alert("Incorrect!");
     }
+    this.questionService.updateQuestion(updatedQuestion);
+  }
+
+  nextQuestion() {
+    this.activeQuestionId++;
+  }
+
+  previousQuestion() {
+    this.activeQuestionId--;
   }
 }

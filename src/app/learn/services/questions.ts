@@ -1,48 +1,64 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { collection, collectionData, Firestore } from '@angular/fire/firestore';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, filter, first, map, Observable } from 'rxjs';
 
 export interface Question {
-  id?: string,
+  id: string,
   text: string,
   image: string,
   options: Array<string>,
-  answer: string
+  answer: string,
+  completed?: boolean,
+  response?: string
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class Questions {
-  private http = inject(HttpClient);
   private questionsCollectionRef: any;
-  private questions$: Observable<Question[]>;
+  private questions$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
 
   constructor(
     private firestore: Firestore
   ) {
     this.questionsCollectionRef = collection(this.firestore, 'questions');
-    this.questions$ = collectionData<Question>(this.questionsCollectionRef)
   }
-
+  //TODO deal with this subscription, consider using takeUntil
   getQuestions(n: number = 10) {
-    return this.questions$.pipe(
+    collectionData<Question>(this.questionsCollectionRef, { idField: 'id' }).pipe(
       map(questions => {
-        let selectedQuestions = this.getRandom(questions, n);
+        const selectedQuestions = this.getRandom(questions, n);
+        selectedQuestions.forEach(question => question.completed = false);
         return selectedQuestions;
-      })
-    );
+      })).subscribe(this.questions$);
+
+    return this.questions$.asObservable();
   }
 
-  private getRandom(arr: any, n: number) {
-    var result = new Array(n),
-      len = arr.length,
-      taken = new Array(len);
+  updateQuestion(updatedQuestion: Question) {
+    this.questions$.pipe(
+      first(),
+      map((questions) => {
+        const updatedQuestions = [...questions];
+        const indexToUpdate = questions.findIndex((q) => q.id === updatedQuestion.id)
+        updatedQuestions[indexToUpdate] = updatedQuestion;
+        return updatedQuestions;
+      })
+    ).subscribe((updatedQuestions) => {
+      this.questions$.next(updatedQuestions);
+    });
+  }
+
+  private getRandom(questions: Question[], n: number) {
+    const arr = [...questions];
+    const result = new Array(n);
+    let len = arr.length;
+    const taken = new Array(len);
     if (n > len)
       throw new RangeError("getRandom: more elements taken than available");
     while (n--) {
-      var x = Math.floor(Math.random() * len);
+      const x = Math.floor(Math.random() * len);
       result[n] = arr[x in taken ? taken[x] : x];
       taken[x] = --len in taken ? taken[len] : len;
     }
