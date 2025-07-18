@@ -1,12 +1,18 @@
 <div class="learn-container">
     @if(questions$ | async; as questions){
     @if(questions.length > 0){
-    <div class="game-section">
-        <button class="btn" (click)="previousQuestion()" [disabled]="activeQuestionId === 0">atras</button>
-        <h1>{{ questions[activeQuestionId].text }}</h1>
-        <p class="subtitle">Learn garifuna by answering these questions</p>
-        <button class="btn" (click)="nextQuestion()"
-            [disabled]="activeQuestionId === questions.length - 1">adelante</button>
+    <div class="game-section grid grid-flow-col grid-cols-12">
+        <div class="col-span-1 row-span-2 content-center">
+            <button class="btn" (click)="previousQuestion()" [disabled]="activeQuestionId === 0">&lt;</button>
+        </div>
+        <div class="col-span-10">
+            <h1>{{ questions[activeQuestionId].text }}</h1>
+            <p class="subtitle">Aprende garífuna contestando estas preguntas</p>
+        </div>
+        <div class="col-span-1 row-span-2 content-center">
+            <button class="btn" (click)="nextQuestion()" [disabled]="activeQuestionId === questions.length - 1">&gt;
+            </button>
+        </div>
     </div>
     <div class="grid grid-flow-row grid-cols-4 gap-4">
         <div class="row-span-2 col-span-2">
@@ -14,11 +20,13 @@
         </div>
         @for (option of questions[activeQuestionId].options; track $index) {
         <div class="col">
-            <button (click)="checkAnswer(questions[activeQuestionId],option,questions.length === activeQuestionId+1)"
-                class="btn text-white font-bold h-full w-full text-wrap" [ngClass]="{
+            <button class="btn text-white font-bold h-full w-full text-wrap"
+                (click)="checkAnswer(questions[activeQuestionId],option,questions.length === activeQuestionId+1)"
+                [ngClass]="{
                     'bg-blue-500 hover:bg-blue-700': !questions[activeQuestionId].completed,
-                    'bg-green-500 hover:bg-green-700': questions[activeQuestionId].completed && questions[activeQuestionId].answer === option,
-                    'bg-gray-500 hover:bg-gray-700': questions[activeQuestionId].completed && questions[activeQuestionId].answer != option
+                    'bg-gray-500 hover:bg-gray-700': questions[activeQuestionId].completed && (questions[activeQuestionId].answer != option),
+                    'bg-green-500 hover:bg-green-700': questions[activeQuestionId].completed && (questions[activeQuestionId].answer === option),
+                    'bg-red-500 hover:bg-red-700': questions[activeQuestionId].completed && (questions[activeQuestionId].response === option) && (questions[activeQuestionId].answer != option)
                 }">{{ option | titlecase }} </button>
         </div>
         }

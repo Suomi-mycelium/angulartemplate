@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Question, Questions } from '../services/questions';
-import { Observable } from 'rxjs';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Question, QuestionsService } from '../services/questions';
+import { last, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,30 +10,29 @@ import { CommonModule } from '@angular/common';
   styleUrl: './game.scss'
 })
 export class Game implements OnInit {
-  private questionService: Questions = inject(Questions);
+  private questionsService: QuestionsService = inject(QuestionsService);
   activeQuestionId: number = 0;
   finished: boolean = false;
   questions$!: Observable<Question[]>;
 
   ngOnInit() {
-    this.questions$ = this.questionService.getQuestions();
-    this.questions$.subscribe((q) => console.log(q));
+    this.questions$ = this.questionsService.getQuestions();
   }
 
   checkAnswer(question: Question, selectedOption: string, lastQuestion: boolean) {
-    const updatedQuestion = { ...question, response: selectedOption };
+    if (question.completed) return;
+
+
     if (selectedOption === question.answer) {
       alert("Correct!");
-      updatedQuestion.completed = true;
-      if (lastQuestion) {
-        alert("Finished!");
-      } else {
-        this.activeQuestionId++;
-      }
     } else {
       alert("Incorrect!");
     }
-    this.questionService.updateQuestion(updatedQuestion);
+
+    const updatedQuestion = { ...question, response: selectedOption, completed: true };
+    this.questionsService.updateQuestion(updatedQuestion);
+
+    if (!lastQuestion) this.activeQuestionId++;
   }
 
   nextQuestion() {

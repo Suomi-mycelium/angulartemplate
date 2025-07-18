@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { collection, collectionData, Firestore } from '@angular/fire/firestore';
-import { BehaviorSubject, filter, first, map, Observable } from 'rxjs';
+import { BehaviorSubject, filter, first, map, Observable, Subject, takeUntil } from 'rxjs';
 
 export interface Question {
   id: string,
@@ -15,7 +15,7 @@ export interface Question {
 @Injectable({
   providedIn: 'root'
 })
-export class Questions {
+export class QuestionsService {
   private questionsCollectionRef: any;
   private questions$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
 
@@ -24,7 +24,8 @@ export class Questions {
   ) {
     this.questionsCollectionRef = collection(this.firestore, 'questions');
   }
-  //TODO deal with this subscription, consider using takeUntil
+
+  // TODO: Deal with this subscription
   getQuestions(n: number = 10) {
     collectionData<Question>(this.questionsCollectionRef, { idField: 'id' }).pipe(
       map(questions => {
