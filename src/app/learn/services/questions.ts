@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { collection, collectionData, Firestore } from '@angular/fire/firestore';
-import { BehaviorSubject, filter, first, map, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, first, map, Observable, Subject, take, takeUntil } from 'rxjs';
 
 export interface Question {
   id: string,
@@ -23,23 +23,24 @@ export class QuestionsService {
     private firestore: Firestore
   ) {
     this.questionsCollectionRef = collection(this.firestore, 'questions');
-  }
-
-  // TODO: Deal with this subscription
-  getQuestions(n: number = 10) {
     collectionData<Question>(this.questionsCollectionRef, { idField: 'id' }).pipe(
       map(questions => {
-        const selectedQuestions = this.getRandom(questions, n);
-        selectedQuestions.forEach(question => question.completed = false);
+        let selectedQuestions = [...questions];
+        if (questions.length > 0) {
+          selectedQuestions = this.getRandom(selectedQuestions);
+          selectedQuestions.forEach(question => question.completed = false);
+        }
         return selectedQuestions;
       })).subscribe(this.questions$);
+  }
 
+  getQuestions() {
     return this.questions$.asObservable();
   }
 
   updateQuestion(updatedQuestion: Question) {
     this.questions$.pipe(
-      first(),
+      take(1),
       map((questions) => {
         const updatedQuestions = [...questions];
         const indexToUpdate = questions.findIndex((q) => q.id === updatedQuestion.id)
@@ -51,7 +52,7 @@ export class QuestionsService {
     });
   }
 
-  private getRandom(questions: Question[], n: number) {
+  private getRandom(questions: Question[], n: number = 10) {
     const arr = [...questions];
     const result = new Array(n);
     let len = arr.length;

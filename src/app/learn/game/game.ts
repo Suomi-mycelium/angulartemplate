@@ -15,6 +15,10 @@ export class Game implements OnInit {
   finished: boolean = false;
   questions$!: Observable<Question[]>;
 
+  constructor() {
+
+  }
+
   ngOnInit() {
     this.questions$ = this.questionsService.getQuestions();
   }
